@@ -73,8 +73,8 @@ public class EightPuzzleFunctions {
 		for (int val = 1; val <= 8; val++) {
 			XYLocation locCurr = currState.getLocationOf(val);
 			XYLocation locGoal = GOAL_STATE.getLocationOf(val);
-			result += Math.pow(2, Math.abs(locGoal.getX() - locCurr.getX()));
-			result +=  Math.pow(2, Math.abs(locGoal.getY() - locCurr.getY()));
+			result += (Math.abs(locGoal.getX() - locCurr.getX())) * Math.pow(2, val);
+			result += (Math.abs(locGoal.getY() - locCurr.getY())) * Math.pow(2, val);
 		}
 		return result;
 	}
@@ -82,22 +82,23 @@ public class EightPuzzleFunctions {
 	//h3
 	
 	public static double nonConsistentHeuristic(Node<EightPuzzleBoard, Action> node) {
-		
-		//2 * numero de fichas a distancia ortogonal 2 de su posición final
+
 		EightPuzzleBoard currState = node.getState();
 		int result = 0;
 		for (int val = 1; val <= 8; val++) {
 			XYLocation locCurr = currState.getLocationOf(val);
 			XYLocation locGoal = GOAL_STATE.getLocationOf(val);
-			if(Math.abs(locGoal.getX() - locCurr.getX()) == 0 && Math.abs(locGoal.getY() - locCurr.getY()) == 2 ) {
-				result++;
-			}else {
-				if(Math.abs(locGoal.getX() - locCurr.getX()) == 2 && Math.abs(locGoal.getY() - locCurr.getY()) == 0 ) {
-					result++;
-				}
-			}
+			int distance = Math.abs(locGoal.getX() - locCurr.getX()) + Math.abs(locGoal.getY() - locCurr.getY());
+			if (distance == 2)
+				result += distance * Math.pow(2, val);
 		}
-		return 2*result;
+		return result;
+	}
+
+	// PEA
+	public static double getEpsilonWeigthedManhattanDistance(Node<EightPuzzleBoard, Action> node) {
+		double epsilon = 0.1; // >= 0
+		return getWeightManhattanDistance(node) * (1 + epsilon);
 	}
 	
 
@@ -119,15 +120,6 @@ public class EightPuzzleFunctions {
 		for (int val = 1; val <= 8; val++)
 			if (!(currState.getLocationOf(val).equals(GOAL_STATE.getLocationOf(val))))
 				result++;
-		return result;
-	}
-	
-	public static double costPow(Node<EightPuzzleBoard, Action> node) {
-		EightPuzzleBoard currState = node.getState();
-		int result = 0;
-		for (int val = 1; val <= 8; val++)
-			if (!(currState.getLocationOf(val).equals(GOAL_STATE.getLocationOf(val))))
-				result+=Math.pow(2, val);
 		return result;
 	}
 

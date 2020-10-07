@@ -106,9 +106,9 @@ public class EightPuzzleDemo {
 		
 		
 //		eightPuzzleNullHeuristic(); //h=0
-//		eightPuzzleMisplacedTiles(); //h1
+		eightPuzzleMisplacedTiles(); //h1
 //		eightPuzzleWeightManhattan(); //h2
-		eightPuzzleNonConsistent(); //h3
+//		eightPuzzleNonConsistent(); //h3
 		//eightPuzzleEpsilon(); // PEA = (1+epsilon)*h2
 		
 //		eightPuzzleDLSDemo();
@@ -121,7 +121,8 @@ public class EightPuzzleDemo {
 		
 
 	}
-	
+
+	// h0
 	private static void eightPuzzleNullHeuristic() {
 		System.out.println("\nEightPuzzleDemo AStar Search (NullHeursitic)");
 		try {
@@ -135,7 +136,8 @@ public class EightPuzzleDemo {
 			e.printStackTrace();
 		}
 	}
-	
+
+	// h1
 	private static void eightPuzzleMisplacedTiles() {
 		System.out.println("\nEightPuzzleDemo AStar Search (MisplacedTileHeursitic)");
 		try {
@@ -150,7 +152,7 @@ public class EightPuzzleDemo {
 		}
 	}
 	
-	
+	// h2
 	private static void eightPuzzleWeightManhattan() {
 		System.out.println("\nEightPuzzleDemo AStar Search (ManhattanHeursitic)");
 		try {
@@ -164,9 +166,11 @@ public class EightPuzzleDemo {
 			e.printStackTrace();
 		}
 	}
-	
+
+
+	//h3
 	private static void eightPuzzleNonConsistent() {
-		System.out.println("\nEightPuzzleDemo AStar Search (MisplacedTileHeursitic)");
+		System.out.println("\nEightPuzzleDemo AStar Search (Non consistant heuristic)");
 		try {
 			Problem<EightPuzzleBoard, Action> problem = new BidirectionalEightPuzzleProblem(estadoInicial2);
 			SearchForActions<EightPuzzleBoard, Action> search = new AStarSearch<>(new GraphSearch<>(),
@@ -178,10 +182,26 @@ public class EightPuzzleDemo {
 			e.printStackTrace();
 		}
 	}
+
+	// PEA
+
+	private static void eightPuzzleEpsilon() {
+		System.out.println("\nEightPuzzleDemo AStar Search (PEA heuristic)");
+		try {
+			Problem<EightPuzzleBoard, Action> problem = new BidirectionalEightPuzzleProblem(estadoInicial2);
+			SearchForActions<EightPuzzleBoard, Action> search = new AStarSearch<>(new GraphSearch<>(),
+					EightPuzzleFunctions::getEpsilonWeigthedManhattanDistance);
+			SearchAgent<Object, EightPuzzleBoard, Action> agent = new SearchAgent<>(problem, search);
+			printActions(agent.getActions());
+			printInstrumentation(agent.getInstrumentation());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
-	
-	
-	
+
+
+
 
 	private static void eightPuzzleDLSDemo() {
 		System.out.println("\nEightPuzzleDemo recursive DLS (9)");
