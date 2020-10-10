@@ -16,7 +16,8 @@ import java.util.Objects;
  *
  * @author Ruediger Lunde
  */
-public class NQueensFunctions {
+public class
+NQueensFunctions {
 
     public static Problem<NQueensBoard, QueenAction> createIncrementalFormulationProblem(int boardSize) {
         return new GeneralProblem<>(new NQueensBoard(boardSize), NQueensFunctions::getIFActions,
@@ -99,5 +100,15 @@ public class NQueensFunctions {
      */
     public static double getNumberOfAttackingPairs(Node<NQueensBoard, QueenAction> node) {
         return node.getState().getNumberOfAttackingPairs();
+    }
+
+    public static double getHeuristicProbabilisticEstimationOfSolution(Node<NQueensBoard, QueenAction> node) {
+        //fichas no atacadas
+        int n = node.getState().getSize();
+        int k = node.getState().getNumberOfAttackingPairs();
+        double p = node.getState().probability();
+        // n-k / p
+        return (n-k)/p;
+//        return node.getState().getNumberOfAttackingPairs();
     }
 }

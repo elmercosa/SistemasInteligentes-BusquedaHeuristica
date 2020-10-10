@@ -135,6 +135,27 @@ public class NQueensBoard {
 
 	}
 
+	public double probability() {
+		double fichas_no_atacadas = 0;
+		for (int col = 0; col < getSize(); col++) {
+			for (int row = 0; row < getSize(); row++) {
+				if (!queenExistsAt(col, row) && !isSquareUnderAttack(new XYLocation(col, row)))
+					fichas_no_atacadas++;
+			}
+		}
+
+		double espacio_disponible = 0;
+		for (int col = 0; col < getSize(); col++) {
+			for (int row = 0; row < getSize(); row++) {
+				if (!isSquareHorizontallyAttacked(col, row) && !queenExistsAt(col, row))
+					espacio_disponible++;
+			}
+		}
+		System.out.println("asdasd:"+ (espacio_disponible == 0? 0 : fichas_no_atacadas/espacio_disponible));
+		return espacio_disponible == 0? 0 : fichas_no_atacadas/espacio_disponible;
+	}
+
+
 	public int getNumberOfAttackingPairs() {
 		return getQueenPositions().stream().mapToInt(this::getNumberOfAttacksOn).sum() / 2;
 	}

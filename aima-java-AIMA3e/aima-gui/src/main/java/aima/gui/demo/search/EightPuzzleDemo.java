@@ -84,11 +84,11 @@ public class EightPuzzleDemo {
 //		{4, 5, 3, 7, 6, 2, 8, 0, 1}
 //		{2, 7, 8, 5, 4, 0, 3, 1, 6}
 	// 30 movimientos
-		{5, 6, 7, 2, 8, 4, 0, 3, 1}
+//		{5, 6, 7, 2, 8, 4, 0, 3, 1}
 //		{5, 6, 7, 4, 0, 8, 3, 2, 1}
-//		{5, 4, 7, 6, 0, 3, 8, 2, 1} 
+//		{5, 4, 7, 6, 0, 3, 8, 2, 1}
 //		{3, 8, 7, 4, 0, 6, 5, 2, 1}
-//		{5, 6, 3, 4, 0, 2, 7, 8, 1}
+		{5, 6, 3, 4, 0, 2, 7, 8, 1}
 	// Instancias especiales
 //		{ 6, 3, 2, 5, 7, 8, 0, 4, 1 } 	// 24 movimientos
 //		{ 6, 3, 2, 5, 8, 1, 4, 0, 7 } 	// 23 movimientos
@@ -105,11 +105,11 @@ public class EightPuzzleDemo {
 		System.out.println("Initial State:\n" + estadoInicial2);
 		
 		
-//		eightPuzzleNullHeuristic(); //h=0
+		eightPuzzleNullHeuristic(); //h=0
 		eightPuzzleMisplacedTiles(); //h1
-//		eightPuzzleWeightManhattan(); //h2
-//		eightPuzzleNonConsistent(); //h3
-		//eightPuzzleEpsilon(); // PEA = (1+epsilon)*h2
+		eightPuzzleWeightManhattan(); //h2
+		eightPuzzleNonConsistent(); //h3
+		eightPuzzleEpsilon(); // PEA = (1+epsilon)*h2
 		
 //		eightPuzzleDLSDemo();
 //		eightPuzzleIDLSDemo();

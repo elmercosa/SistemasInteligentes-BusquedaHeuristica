@@ -83,7 +83,7 @@ public class TreeSearch<S, A> extends QueueSearch<S, A> {
 			
 			
 			//Monitorizar el valor de f(nodo)
-			System.out.println("f-value=" + evalFn.applyAsDouble(node));
+//			System.out.println("f-value=" + evalFn.applyAsDouble(node));
 			
 			
 			// if the node contains a goal state then return the corresponding solution
