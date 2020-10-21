@@ -132,8 +132,13 @@ public class GeneticAlgorithm<A> {
 		// repeat
 		int itCount = 0;
 		do {
-			population = nextGeneration(population, fitnessFn);
+
 			bestIndividual = retrieveBestIndividual(population, fitnessFn);
+			population = nextGeneration(population, fitnessFn, bestIndividual);
+
+//			monitorizar el fitnes medio y mejor
+			System.out.println("\nGen: "+ itCount + " f_best: " + fitnessFn.apply(bestIndividual) + " f_average: " + averageFitness(population, fitnessFn));
+
 
 			updateMetrics(population, ++itCount, System.currentTimeMillis() - startTime);
 
@@ -147,6 +152,15 @@ public class GeneticAlgorithm<A> {
 		notifyProgressTrackers(itCount, population);
 		// return the best individual in population, according to FITNESS-FN
 		return bestIndividual;
+	}
+
+	private double averageFitness(List<Individual<A>> population, FitnessFunction<A> fitnessFn) {
+		// Determine all of the fitness values
+		double fValues = 0;
+		for (Individual<A> aIndividual : population) {
+			fValues += fitnessFn.apply(aIndividual);
+		}
+		return fValues/population.size();
 	}
 
 	public Individual<A> retrieveBestIndividual(Collection<Individual<A>> population, FitnessFunction<A> fitnessFn) {
@@ -230,11 +244,11 @@ public class GeneticAlgorithm<A> {
 	 * Primitive operation which is responsible for creating the next
 	 * generation. Override to get progress information!
 	 */
-	protected List<Individual<A>> nextGeneration(List<Individual<A>> population, FitnessFunction<A> fitnessFn) {
+	protected List<Individual<A>> nextGeneration(List<Individual<A>> population, FitnessFunction<A> fitnessFn, Individual<A> bestBefore) {
 		// new_population <- empty set
 		List<Individual<A>> newPopulation = new ArrayList<>(population.size());
 		// for i = 1 to SIZE(population) do
-		for (int i = 0; i < population.size(); i++) {
+		for (int i = 0; i < population.size() -1; i++) { //-1 para el elitismo
 			// x <- RANDOM-SELECTION(population, FITNESS-FN)
 			Individual<A> x = randomSelection(population, fitnessFn);
 			// y <- RANDOM-SELECTION(population, FITNESS-FN)
@@ -248,6 +262,7 @@ public class GeneticAlgorithm<A> {
 			// add child to new_population
 			newPopulation.add(child);
 		}
+		newPopulation.add(bestBefore);
 		notifyProgressTrackers(getIterations(), population);
 		return newPopulation;
 	}
@@ -260,11 +275,20 @@ public class GeneticAlgorithm<A> {
 
 		// Determine all of the fitness values
 		double[] fValues = new double[population.size()];
+		double minFitness = fitnessFn.apply(population.get(0));
 		for (int i = 0; i < population.size(); i++) {
 			fValues[i] = fitnessFn.apply(population.get(i));
+			minFitness = Math.min(minFitness, fValues[i]);
 		}
 		// Normalize the fitness values
 		fValues = Util.normalize(fValues);
+
+		// Escalado del fitness. Le restamos el minFitness a todos
+		for (int i = 0; i < population.size(); i++) {
+			fValues[i] -= minFitness;
+		}
+
+
 		double prob = random.nextDouble();
 		double totalSoFar = 0.0;
 		for (int i = 0; i < fValues.length; i++) {
@@ -296,6 +320,28 @@ public class GeneticAlgorithm<A> {
 		return new Individual<A>(childRepresentation);
 	}
 
+
+	protected Individual<A> reproduce2(Individual<A> x, Individual<A> y) {
+		// n <- LENGTH(x);
+		// Note: this is = this.individualLength
+		// c <- random number from 1 to n
+		int P2 = randomOffset(individualLength);
+		int P1 = randomOffset(individualLength);
+		// return APPEND(SUBSTRING(x, 1, c), SUBSTRING(y, c+1, n))
+		List<A> childRepresentationX = new ArrayList<A>(x.getRepresentation());
+		List<A> childRepresentationY = new ArrayList<A>(y.getRepresentation());
+		for (int i = P2; i < P1; i++) {
+			childRepresentationY.indexOf(childRepresentationX.get(i));
+//			childRepresentationX.set(i , )
+		}
+
+
+//		childRepresentation.addAll(x.getRepresentation().subList(0, c));
+//		childRepresentation.addAll(y.getRepresentation().subList(c, individualLength));
+
+		return new Individual<A>(childRepresentationX);
+	}
+
 	protected Individual<A> mutate(Individual<A> child) {
 		int mutateOffset = randomOffset(individualLength);
 		int alphaOffset = randomOffset(finiteAlphabet.size());
@@ -306,6 +352,17 @@ public class GeneticAlgorithm<A> {
 
 		return new Individual<A>(mutatedRepresentation);
 }
+
+	protected Individual<A> mutate2(Individual<A> child) {
+		int mutateOffset = randomOffset(individualLength);
+		int alphaOffset = randomOffset(finiteAlphabet.size());
+
+		List<A> mutatedRepresentation = new ArrayList<A>(child.getRepresentation());
+
+		mutatedRepresentation.set(mutateOffset, finiteAlphabet.get(alphaOffset));
+
+		return new Individual<A>(mutatedRepresentation);
+	}
 
 	protected int randomOffset(int length) {
 		return random.nextInt(length);
