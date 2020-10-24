@@ -254,10 +254,10 @@ public class GeneticAlgorithm<A> {
 			// y <- RANDOM-SELECTION(population, FITNESS-FN)
 			Individual<A> y = randomSelection(population, fitnessFn);
 			// child <- REPRODUCE(x, y)
-			Individual<A> child = reproduce(x, y);
+			Individual<A> child = reproduce2(x, y);
 			// if (small random probability) then child <- MUTATE(child)
 			if (random.nextDouble() <= mutationProbability) {
-				child = mutate(child);
+				child = mutate2(child);
 			}
 			// add child to new_population
 			newPopulation.add(child);
@@ -325,21 +325,28 @@ public class GeneticAlgorithm<A> {
 		// n <- LENGTH(x);
 		// Note: this is = this.individualLength
 		// c <- random number from 1 to n
-		int P2 = randomOffset(individualLength);
-		int P1 = randomOffset(individualLength);
-		// return APPEND(SUBSTRING(x, 1, c), SUBSTRING(y, c+1, n))
-		List<A> childRepresentationX = new ArrayList<A>(x.getRepresentation());
-		List<A> childRepresentationY = new ArrayList<A>(y.getRepresentation());
-		for (int i = P2; i < P1; i++) {
-			childRepresentationY.indexOf(childRepresentationX.get(i));
-//			childRepresentationX.set(i , )
+
+		int individualLength = x.length();
+
+		int p1 = randomOffset(individualLength);
+		int p2 = randomOffset(individualLength);
+		List<A> xArray = x.getRepresentation();
+		List<A> yArray = y.getRepresentation();
+		List<A> offArray = new ArrayList<A>(xArray);
+		// Keep the substring from p1 to p2-1 to the offspring, order and position
+		// The remaining genes, p2 to p1-1, from the second parent, relative order
+		int k = p2;
+		for (int i = 0; i < individualLength; i++) {
+			int j = p1;
+			while (j < p2 + (p2 <= p1 ? individualLength : 0) && yArray.get(i) != xArray.get(j % individualLength))
+				j++;
+			if (j == p2 + (p2 <= p1 ? individualLength : 0)) {
+				// yArray[i] is not in offArray from p1 to p2-1
+				offArray.set(k % individualLength, yArray.get(i));
+				k++;
+			}
 		}
-
-
-//		childRepresentation.addAll(x.getRepresentation().subList(0, c));
-//		childRepresentation.addAll(y.getRepresentation().subList(c, individualLength));
-
-		return new Individual<A>(childRepresentationX);
+		return new Individual<A>(offArray);
 	}
 
 	protected Individual<A> mutate(Individual<A> child) {
@@ -354,14 +361,14 @@ public class GeneticAlgorithm<A> {
 }
 
 	protected Individual<A> mutate2(Individual<A> child) {
-		int mutateOffset = randomOffset(individualLength);
-		int alphaOffset = randomOffset(finiteAlphabet.size());
-
-		List<A> mutatedRepresentation = new ArrayList<A>(child.getRepresentation());
-
-		mutatedRepresentation.set(mutateOffset, finiteAlphabet.get(alphaOffset));
-
-		return new Individual<A>(mutatedRepresentation);
+		int individualLength = child.length();
+		int p = randomOffset(individualLength - 1);
+		int c = randomOffset(individualLength - 1);
+		ArrayList<A> mutatedRepresentation = new ArrayList<A>(child.getRepresentation());
+		A temp = mutatedRepresentation.get(p);
+		mutatedRepresentation.set(p, mutatedRepresentation.get(c));
+		mutatedRepresentation.set(c, temp);
+		return (new Individual<A>(mutatedRepresentation));
 	}
 
 	protected int randomOffset(int length) {
