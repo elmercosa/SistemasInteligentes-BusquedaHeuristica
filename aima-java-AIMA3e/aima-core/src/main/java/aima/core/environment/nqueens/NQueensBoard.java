@@ -151,7 +151,6 @@ public class NQueensBoard {
 					espacio_disponible++;
 			}
 		}
-		System.out.println("asdasd:"+ (espacio_disponible == 0? 0 : fichas_no_atacadas/espacio_disponible));
 		return espacio_disponible == 0? 0 : fichas_no_atacadas/espacio_disponible;
 	}
 

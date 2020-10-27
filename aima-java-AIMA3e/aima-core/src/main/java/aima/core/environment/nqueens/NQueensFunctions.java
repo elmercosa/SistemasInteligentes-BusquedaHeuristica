@@ -109,6 +109,5 @@ NQueensFunctions {
         double p = node.getState().probability();
         // n-k / p
         return (n-k)/p;
-//        return node.getState().getNumberOfAttackingPairs();
     }
 }

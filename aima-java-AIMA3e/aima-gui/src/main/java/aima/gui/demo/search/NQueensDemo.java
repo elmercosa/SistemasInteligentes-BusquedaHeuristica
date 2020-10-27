@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 
 public class NQueensDemo {
 
-	private static final int boardSize = 16;
+	private static final int boardSize = 64;
 
 	public static void main(String[] args) {
 		startNQueensDemo();
@@ -38,7 +38,9 @@ public class NQueensDemo {
 	private static void startNQueensDemo() {
 //		solveNQueensWithDepthFirstSearch();
 //		solveNQueensWithBreadthFirstSearch();
-//		solveNQueensWithAStarSearch();
+
+//			solveNQueensWithAStarSearch();
+
 //		solveNQueensWithAStarSearch4e();
 //		solveNQueensWithRecursiveDLS();
 //		solveNQueensWithIterativeDeepeningSearch();
@@ -74,16 +76,20 @@ public class NQueensDemo {
 		System.out.println("\n--- NQueensDemo A* (complete state formulation, graph search 3e) ---");
 
 //		Version normal
-//		Problem<NQueensBoard, QueenAction> problem = NQueensFunctions.createCompleteStateFormulationProblem(boardSize, Config.QUEEN_IN_EVERY_COL);
+		Problem<NQueensBoard, QueenAction> problem = NQueensFunctions.createCompleteStateFormulationProblem(boardSize,
+//				Config.QUEEN_IN_EVERY_COL // Estocástico
+				Config.QUEENS_IN_FIRST_ROW // Determinista
+		);
 
 //		Version incremental
-		Problem<NQueensBoard, QueenAction> problem = NQueensFunctions.createIncrementalFormulationProblem(boardSize);
+//		Problem<NQueensBoard, QueenAction> problem = NQueensFunctions.createIncrementalFormulationProblem(boardSize);
 
 		SearchForActions<NQueensBoard, QueenAction> search = new AStarSearch<>(new GraphSearch<>(), NQueensFunctions::getNumberOfAttackingPairs);
 //		SearchForActions<NQueensBoard, QueenAction> search = new AStarSearch<>(new GraphSearch<>(), NQueensFunctions::getHeuristicProbabilisticEstimationOfSolution);
 		Optional<List<QueenAction>> actions = search.findActions(problem);
 
 		actions.ifPresent(qActions -> qActions.forEach(System.out::println));
+		System.out.println(actions.get().size());
 		System.out.println(search.getMetrics());
 	}
 
@@ -152,10 +158,6 @@ public class NQueensDemo {
 	}
 
 
-
-
-
-
 	private static void solveNQueensWithGeneticAlgorithmSearch() {
 		System.out.println("\n--- NQueensDemo GeneticAlgorithm ---");
 
@@ -165,7 +167,7 @@ public class NQueensDemo {
 		//Parametros
 		final int popSize = 100;
 		final double mutationProbability = 0.15; // Pc = 1.0
-		final int numberOfGenerations = 100;
+		final int numberOfGenerations = 300;
 		// Generate an initial population
 		Set<Individual<Integer>> population = new HashSet<>();
 		for (int i = 0; i < popSize; i++)
