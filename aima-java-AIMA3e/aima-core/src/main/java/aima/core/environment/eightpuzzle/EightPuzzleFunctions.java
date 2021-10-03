@@ -15,11 +15,13 @@ import java.util.stream.Stream;
  */
 public class EightPuzzleFunctions {
 
-//	public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
+	// public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new
+	// int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
 
-//	public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new int[] { 1, 2, 3, 8, 0, 4, 7, 6, 5 });
-//	
-	public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new int[] {1, 2, 3, 8, 0, 4, 7, 6, 5});
+	// public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new
+	// int[] { 1, 2, 3, 8, 0, 4, 7, 6, 5 });
+	//
+	public static final EightPuzzleBoard GOAL_STATE = new EightPuzzleBoard(new int[] { 1, 2, 3, 8, 0, 4, 7, 6, 5 });
 
 	public static List<Action> getActions(EightPuzzleBoard state) {
 		return Stream.of(EightPuzzleBoard.UP, EightPuzzleBoard.DOWN, EightPuzzleBoard.LEFT, EightPuzzleBoard.RIGHT)
@@ -41,46 +43,49 @@ public class EightPuzzleFunctions {
 		}
 		return result;
 	}
-	
+
 	public static double stepCostFunction(EightPuzzleBoard state, Action action, EightPuzzleBoard resultState) {
-		
+
 		XYLocation gapPos = state.getLocationOf(0);
 		int ficha = resultState.getValueAt(gapPos);
 		return Math.pow(2, ficha);
-		
+
+
 	}
-	
+
 	// h = 0
-	
+
 	public static double nullheuristic(Node<EightPuzzleBoard, Action> node) {
 		return 0.0;
 	}
-	
+
+	// SE MULTIPLICA POR LA POTENCIA PARA QUE EL ALGORITMO ESTÉ MAS INFORMADO
+
 	// h1
 	public static int getWeightNumberOfMisplacedTiles(Node<EightPuzzleBoard, Action> node) {
 		EightPuzzleBoard currState = node.getState();
 		int result = 0;
 		for (int val = 1; val <= 8; val++)
 			if (!(currState.getLocationOf(val).equals(GOAL_STATE.getLocationOf(val))))
-				result += Math.pow(2, val);
+				result += Math.pow(2, val); // sumamos 2^ficha
 		return result;
 	}
-	
-	//h2
+
+	// h2
 	public static double getWeightManhattanDistance(Node<EightPuzzleBoard, Action> node) {
 		EightPuzzleBoard currState = node.getState();
 		int result = 0;
 		for (int val = 1; val <= 8; val++) {
 			XYLocation locCurr = currState.getLocationOf(val);
 			XYLocation locGoal = GOAL_STATE.getLocationOf(val);
-			result += (Math.abs(locGoal.getX() - locCurr.getX())) * Math.pow(2, val);
-			result += (Math.abs(locGoal.getY() - locCurr.getY())) * Math.pow(2, val);
+			result += (Math.abs(locGoal.getX() - locCurr.getX())) * Math.pow(2, val); // multiplicamos 2^ficha
+			result += (Math.abs(locGoal.getY() - locCurr.getY())) * Math.pow(2, val); // multiplicamos 2^ficha
 		}
 		return result;
 	}
 
-	//h3
-	
+	// h3
+
 	public static double nonConsistentHeuristic(Node<EightPuzzleBoard, Action> node) {
 
 		EightPuzzleBoard currState = node.getState();
@@ -100,7 +105,6 @@ public class EightPuzzleFunctions {
 		double epsilon = 0.1; // >= 0
 		return getWeightManhattanDistance(node) * (1 + epsilon);
 	}
-	
 
 	public static double getManhattanDistance(Node<EightPuzzleBoard, Action> node) {
 		EightPuzzleBoard currState = node.getState();

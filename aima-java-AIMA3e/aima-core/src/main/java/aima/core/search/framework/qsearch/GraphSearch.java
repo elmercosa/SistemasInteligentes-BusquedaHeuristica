@@ -1,5 +1,7 @@
 package aima.core.search.framework.qsearch;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Queue;
@@ -46,9 +48,9 @@ import aima.core.search.framework.problem.Problem;
  */
 public class GraphSearch<S, A> extends TreeSearch<S, A> {
 
-//	private Set<S> explored = new HashSet<>();
+	private Set<S> expanded = new HashSet<S>();
 	
-	private HashMap<S, Node<S,A>> explored = new HashMap<>();
+	private HashMap<S, Node<S,A>> reached = new HashMap<>();
 
 	public GraphSearch() {
 		this(new NodeFactory<>());
@@ -65,17 +67,17 @@ public class GraphSearch<S, A> extends TreeSearch<S, A> {
 	@Override
 	public Optional<Node<S, A>> findNode(Problem<S, A> problem, Queue<Node<S, A>> frontier) {
 		// initialize the explored set to be empty
-		explored.clear();
+		reached.clear();
 		return super.findNode(problem, frontier);
 	}
 
 	/**
 	 * Inserts the node at the tail of the frontier if the corresponding state
-	 * was not yet explored.
+	 * was not yet reached.
 	 */
 //	@Override
 //	protected void addToFrontier(Node<S, A> node) {
-//		if (!explored.contains(node.getState())) {
+//		if (!reached.contains(node.getState())) {
 //			frontier.add(node);
 //			updateMetrics(frontier.size());
 //		}
@@ -83,16 +85,18 @@ public class GraphSearch<S, A> extends TreeSearch<S, A> {
 	
 	@Override
 	protected void addToFrontier(Node<S, A> node) {
-		if (!explored.containsKey(node.getState())) {
+		if (!reached.containsKey(node.getState()) || node.getPathCost() < reached.get(node.getState()).getPathCost()) {
 			frontier.add(node);
 			updateMetrics(frontier.size());
-		}else {
-			if(node.getPathCost() < explored.get(node.getState()).getPathCost()) {
-				explored.remove(node.getState());
-				frontier.add(node);
+
+			if(expanded.contains(node.getState())){
 				metrics.incrementInt(METRIC_NODES_EXPANDED_REINSERTED_IN_FRONTIER);
-				updateMetrics(frontier.size());
+				// el estado del nodo insertado en frontier ya fue explorado
+			}else if( reached.containsKey(node.getState())){
+				metrics.incrementInt(METRIC_NODES_DUPLICATED_IN_FRONTIER);
+				// en frontier hay otro nodo con el mismo estado y un camino peor
 			}
+			reached.put(node.getState(), node);
 		}
 	}
 
@@ -108,8 +112,9 @@ public class GraphSearch<S, A> extends TreeSearch<S, A> {
 	protected Node<S, A> removeFromFrontier() {
 		cleanUpFrontier(); // not really necessary because isFrontierEmpty should be called before...
 		Node<S, A> result = frontier.remove();
-		explored.put(result.getState(), result);
+		// reached.put(result.getState(), result);
 		updateMetrics(frontier.size());
+		expanded.add(result.getState());
 		return result;
 	}
 
@@ -130,15 +135,14 @@ public class GraphSearch<S, A> extends TreeSearch<S, A> {
 	 */
 	
 //	private void cleanUpFrontier() {
-//		while (!frontier.isEmpty() && explored.containsKey(frontier.element().getState()))
+//		while (!frontier.isEmpty() && reached.containsKey(frontier.element().getState()))
 //			frontier.remove();
 //	}
 	
 	//CONTAR NODOS DUCPLICADOS
 	private void cleanUpFrontier() {
-		while (!frontier.isEmpty() && explored.containsKey(frontier.element().getState())) {
+		while (!frontier.isEmpty() && frontier.element().getPathCost() > reached.get(frontier.element().getState()).getPathCost() ) {
 			frontier.remove();
-			metrics.incrementInt(METRIC_NODES_RECTIFIED_DUPLICATED_IN_FRONTIER);
 		}
 	}
 }

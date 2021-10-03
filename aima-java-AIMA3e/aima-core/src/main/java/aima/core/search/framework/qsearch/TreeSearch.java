@@ -69,9 +69,7 @@ public class TreeSearch<S, A> extends QueueSearch<S, A> {
 		Node<S, A> root = nodeFactory.createNode(problem.getInitialState());
 		
 		//tiempo inicial
-/////////////////////////////////////////////////////
 		long start = System.currentTimeMillis(); 
-/////////////////////////////////////////////////////
 		
 		addToFrontier(root);
 		if (earlyGoalTest && problem.testSolution(root))
@@ -81,20 +79,15 @@ public class TreeSearch<S, A> extends QueueSearch<S, A> {
 			// choose a leaf node and remove it from the frontier
 			Node<S, A> node = removeFromFrontier();
 			
-			
 			//Monitorizar el valor de f(nodo)
-//			System.out.println("f-value=" + evalFn.applyAsDouble(node));
-			
+			// System.out.println("f() =" + evalFn.applyAsDouble(node));
 			
 			// if the node contains a goal state then return the corresponding solution
 			if (!earlyGoalTest && problem.testSolution(node)) {
-				/////////////////////////////////////////////////////
 				//tiempo final
 				long end = System.currentTimeMillis();
 				metrics.set(METRIC_TIME_TAKEN, (end - start));
-				/////////////////////////////////////////////////////
 				return asOptional(node);
-
 			}
 
 			// expand the chosen node and add the successor nodes to the frontier

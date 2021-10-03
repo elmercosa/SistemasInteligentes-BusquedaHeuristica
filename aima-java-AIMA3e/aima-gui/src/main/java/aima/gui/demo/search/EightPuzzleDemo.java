@@ -78,24 +78,24 @@ public class EightPuzzleDemo {
 //		{6, 4, 0, 2, 8, 1, 7, 3, 5}
 //		{4, 1, 3, 7, 2, 8, 5, 6, 0}
 	// 25 movimientos
-//		{6, 7, 4, 0, 5, 1, 3, 2, 8}
-//		{6, 0, 7, 5, 4, 1, 3, 8, 2}
-//		{3, 4, 8, 5, 7, 1, 6, 0, 2}
-//		{4, 5, 3, 7, 6, 2, 8, 0, 1}
-//		{2, 7, 8, 5, 4, 0, 3, 1, 6}
+		{6, 7, 4, 0, 5, 1, 3, 2, 8}
+		// {6, 0, 7, 5, 4, 1, 3, 8, 2}
+		// {3, 4, 8, 5, 7, 1, 6, 0, 2}
+		// {4, 5, 3, 7, 6, 2, 8, 0, 1}
+		// {2, 7, 8, 5, 4, 0, 3, 1, 6}
 	// 30 movimientos
-//		{5, 6, 7, 2, 8, 4, 0, 3, 1}
-//		{5, 6, 7, 4, 0, 8, 3, 2, 1}
-//		{5, 4, 7, 6, 0, 3, 8, 2, 1}
-//		{3, 8, 7, 4, 0, 6, 5, 2, 1}
-		{5, 6, 3, 4, 0, 2, 7, 8, 1}
+		// {5, 6, 7, 2, 8, 4, 0, 3, 1}
+		// {5, 6, 7, 4, 0, 8, 3, 2, 1}
+		// {5, 4, 7, 6, 0, 3, 8, 2, 1}
+		// {3, 8, 7, 4, 0, 6, 5, 2, 1}
+		// {5, 6, 3, 4, 0, 2, 7, 8, 1}
 	// Instancias especiales
 //		{ 6, 3, 2, 5, 7, 8, 0, 4, 1 } 	// 24 movimientos
 //		{ 6, 3, 2, 5, 8, 1, 4, 0, 7 } 	// 23 movimientos
 //		{ 3, 5, 6, 4, 2, 7, 0, 8, 1 } 	// 24 movimientos
 //		{ 7, 0, 2, 3, 6, 1, 5, 8, 4 } 	// 21 movimientos
 	
-			);
+);
 
 	
 //	private static EightPuzzleBoard extreme =
@@ -108,8 +108,8 @@ public class EightPuzzleDemo {
 		eightPuzzleNullHeuristic(); //h=0
 		eightPuzzleMisplacedTiles(); //h1
 		eightPuzzleWeightManhattan(); //h2
-		eightPuzzleNonConsistent(); //h3
-		eightPuzzleEpsilon(); // PEA = (1+epsilon)*h2
+		// eightPuzzleNonConsistent(); //h3
+		// eightPuzzleEpsilon(); // PEA = (1+epsilon)*h2
 		
 //		eightPuzzleDLSDemo();
 //		eightPuzzleIDLSDemo();
@@ -309,7 +309,7 @@ public class EightPuzzleDemo {
 	}
 
 	private static void printActions(List<Action> actions) {
-		actions.forEach(System.out::println);
+		//actions.forEach(System.out::println);
 		System.out.println("Numero de acciones=" + actions.size());
 	}
 }
