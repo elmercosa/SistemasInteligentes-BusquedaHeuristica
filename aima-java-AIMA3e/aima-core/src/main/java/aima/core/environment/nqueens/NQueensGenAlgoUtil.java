@@ -34,8 +34,8 @@ public class NQueensGenAlgoUtil {
 		for (int i = 0; i < boardSize; i++) {
 //			individualRepresentation.add(new Random().nextInt(boardSize));
 			individualRepresentation.add(i);
+			Collections.shuffle(individualRepresentation);
 		}
-		Collections.shuffle(individualRepresentation);
 		return new Individual<>(individualRepresentation);
 	}
 

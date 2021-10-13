@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 
 public class NQueensDemo {
 
-	private static final int boardSize = 64;
+	private static final int boardSize = 16;
 
 	public static void main(String[] args) {
 		startNQueensDemo();
@@ -165,9 +165,9 @@ public class NQueensDemo {
 		Predicate<Individual<Integer>> goalTest = NQueensGenAlgoUtil.getGoalTest();
 
 		//Parametros
-		final int popSize = 100;
+		final int popSize = 50;
 		final double mutationProbability = 0.15; // Pc = 1.0
-		final int numberOfGenerations = 300;
+		final int numberOfGenerations = 10;
 		// Generate an initial population
 		Set<Individual<Integer>> population = new HashSet<>();
 		for (int i = 0; i < popSize; i++)
@@ -175,6 +175,7 @@ public class NQueensDemo {
 
 		GeneticAlgorithm<Integer> ga = new GeneticAlgorithm<>(boardSize,
 				NQueensGenAlgoUtil.getFiniteAlphabetForBoardOfSize(boardSize), mutationProbability);
+				//genera el alfabeto a partir del cual se van a hacer las diferentes permutaciones
 
 		//Run for a number of generations
 		Individual<Integer> bestIndividual = ga.geneticAlgorithm(population, fitnessFunction, numberOfGenerations);

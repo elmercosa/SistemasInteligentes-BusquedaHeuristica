@@ -245,18 +245,19 @@ public class GeneticAlgorithm<A> {
 		// new_population <- empty set
 		List<Individual<A>> newPopulation = new ArrayList<>(population.size());
 		// for i = 1 to SIZE(population) do
-		for (int i = 0; i < population.size() -1; i++) { //-1 para el elitismo
+		for (int i = 0; i < population.size()-1; i++) { //-1 para el elitismo
 			// x <- RANDOM-SELECTION(population, FITNESS-FN)
 			Individual<A> x = randomSelection(population, fitnessFn);
 			// y <- RANDOM-SELECTION(population, FITNESS-FN)
 			Individual<A> y = randomSelection(population, fitnessFn);
+			
 			// child <- REPRODUCE(x, y)
-			Individual<A> child = reproduce2(x, y);
+			Individual<A> child = reproduce3(x, y);
 			// if (small random probability) then child <- MUTATE(child)
 			if (random.nextDouble() <= mutationProbability) {
-				child = mutate2(child);
+				child = mutate(child);
 			}
-			// add child to new_population
+			// add child to new_population reemplazo incondicional
 			newPopulation.add(child);
 		}
 		newPopulation.add(bestBefore);
@@ -275,16 +276,19 @@ public class GeneticAlgorithm<A> {
 		double minFitness = fitnessFn.apply(population.get(0));
 		for (int i = 0; i < population.size(); i++) {
 			fValues[i] = fitnessFn.apply(population.get(i));
-			minFitness = Math.min(minFitness, fValues[i]);
+			if(minFitness > fitnessFn.apply(population.get(i))) {				
+				minFitness = fitnessFn.apply(population.get(i));
+			}
 		}
-		// Normalize the fitness values
-		fValues = Util.normalize(fValues);
+
 
 		// Escalado del fitness. Le restamos el minFitness a todos
 		for (int i = 0; i < population.size(); i++) {
-			fValues[i] -= 0.9*minFitness;
+			fValues[i] -= minFitness;
 		}
-
+		
+		// Normalize the fitness values
+		fValues = Util.normalize(fValues);
 
 		double prob = random.nextDouble();
 		double totalSoFar = 0.0;
@@ -313,12 +317,17 @@ public class GeneticAlgorithm<A> {
 		List<A> childRepresentation = new ArrayList<A>();
 		childRepresentation.addAll(x.getRepresentation().subList(0, c));
 		childRepresentation.addAll(y.getRepresentation().subList(c, individualLength));
+		
+//		System.out.println("padre 1" + x.getRepresentation());
+//		System.out.println("padre 2" + y.getRepresentation());
+//		System.out.println("hijo   " + childRepresentation);
+//		System.out.println("============================================================");
 
 		return new Individual<A>(childRepresentation);
 	}
 
 
-	protected Individual<A> reproduce2(Individual<A> x, Individual<A> y) {
+	protected Individual<A> reproduceOX(Individual<A> x, Individual<A> y) {
 		// n <- LENGTH(x);
 		// Note: this is = this.individualLength
 		// c <- random number from 1 to n
@@ -330,8 +339,8 @@ public class GeneticAlgorithm<A> {
 		while(p2 < p1){
 			p2 = randomOffset(individualLength);
 		}
-//		System.out.println(p1);
-//		System.out.println(p2);
+		System.out.println(p1);
+		System.out.println(p2);
 		List<A> xArray = x.getRepresentation();
 		List<A> yArray = y.getRepresentation();
 		List<A> offArray = new ArrayList<A>(xArray);
@@ -350,10 +359,10 @@ public class GeneticAlgorithm<A> {
 				p1++;
 			}
 		}
-//		System.out.println("padre 1" + x.getRepresentation());
-//		System.out.println("padre 2" + y.getRepresentation());
-//		System.out.println("hijo   " + offArray);
-//		System.out.println("============================================================");
+		System.out.println("padre 1" + x.getRepresentation());
+		System.out.println("padre 2" + y.getRepresentation());
+		System.out.println("hijo   " + offArray);
+		System.out.println("============================================================");
 
 		return new Individual<A>(offArray);
 	}
@@ -367,6 +376,9 @@ public class GeneticAlgorithm<A> {
 
 		int p1 = randomOffset(individualLength);
 		int p2 = randomOffset(individualLength);
+		
+		System.out.println(p1);
+		System.out.println(p2);
 		List<A> xArray = firstParent.getRepresentation();
 		List<A> yArray = secondParent.getRepresentation();
 		List<A> offArray = new ArrayList<A>(xArray);
@@ -388,8 +400,8 @@ public class GeneticAlgorithm<A> {
 				k++;
 			}
 		}
-		System.out.println("padre 1" + firstParent.getRepresentation());
-		System.out.println("padre 2" + secondParent.getRepresentation());
+		System.out.println("padre 1" + xArray);
+		System.out.println("padre 2" + yArray);
 		System.out.println("hijo   " + offArray);
 		System.out.println("============================================================");
 		return new Individual<A>(offArray);
